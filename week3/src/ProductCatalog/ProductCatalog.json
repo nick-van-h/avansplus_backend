@@ -1,0 +1,106 @@
+[
+    {
+        "Name": "Appel",
+        "Price": 0.79
+    },
+    {
+        "Name": "Banaan",
+        "Price": 1.29
+    },
+    {
+        "Name": "Citrus",
+        "Price": 1.33
+    },
+    {
+        "Name": "Druif",
+        "Price": 2.99
+    },
+    {
+        "Name": "Eieren",
+        "Price": 1.09
+    },
+    {
+        "Name": "Fristi",
+        "Price": 3.5
+    },
+    {
+        "Name": "Griekse Yoghurt",
+        "Price": 1.29
+    },
+    {
+        "Name": "Handzeep",
+        "Price": 1.89
+    },
+    {
+        "Name": "IJsbergsla",
+        "Price": 0.49
+    },
+    {
+        "Name": "Jam",
+        "Price": 2.34
+    },
+    {
+        "Name": "Kaas",
+        "Price": 3.6
+    },
+    {
+        "Name": "Lasagnebladen",
+        "Price": 1.39
+    },
+    {
+        "Name": "Melk",
+        "Price": 1.29
+    },
+    {
+        "Name": "Nutella",
+        "Price": 4.8
+    },
+    {
+        "Name": "Olijfolie",
+        "Price": 4.32
+    },
+    {
+        "Name": "Pannekoekenmix",
+        "Price": 2.67
+    },
+    {
+        "Name": "Quinoa",
+        "Price": 3.45
+    },
+    {
+        "Name": "Rijst",
+        "Price": 1.69
+    },
+    {
+        "Name": "Slagroom",
+        "Price": 3.4
+    },
+    {
+        "Name": "Truffelmayonaise",
+        "Price": 6.8
+    },
+    {
+        "Name": "Uien",
+        "Price": 1.45
+    },
+    {
+        "Name": "Vuilniszakken",
+        "Price": 3.18
+    },
+    {
+        "Name": "Wortelen",
+        "Price": 1.2
+    },
+    {
+        "Name": "Xylometazoline",
+        "Price": 6.8
+    },
+    {
+        "Name": "Yoghurt",
+        "Price": 1.6
+    },
+    {
+        "Name": "Zuurkool",
+        "Price": 3.14
+    }
+]

@@ -1,0 +1,29 @@
+.screen {
+    margin: 10px;
+    padding: 30px;
+    border: 4px solid black;
+    width: 400px;
+    height: 300px;
+    overflow: auto;
+}
+
+.screen table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.screen table tr td {
+    border-bottom: 1px dashed grey;
+}
+.screen table tr th {
+    text-align: left;
+    border-bottom: 2px solid black;
+}
+
+.ticket {
+    margin: 10px;
+    padding: 30px;
+    width: 175px;
+    border: 4px solid rgba(48, 39, 24, 0.8);
+    background-color: #fff2c6;
+    background-image: url("https://www.transparenttextures.com/patterns/cardboard.png");
+}
