@@ -22,4 +22,6 @@ if ($bmi < UNDERWEIGHT_UPPER_LIMIT) {
 } else {
     $weight_class = "Obesity";
 }
+
+echo '<h2>Week 1 assignment</h2><hr>';
 echo "Person X with weight {$props["weight"]}kg and length {$props["length"]}m has a BMI of {$bmi_rounded}, which is classified as {$weight_class}";
