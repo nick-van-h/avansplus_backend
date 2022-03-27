@@ -4,7 +4,7 @@
 ini_set("display_errors", 1);
 
 //Default include file
-include('../src/includes.php');
+include(__DIR__ . '/../src/includes.php');
 
 //Include some mark-up
 echo ('<style>');

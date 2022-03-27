@@ -16,7 +16,7 @@ class Catalog
         /**
          * Construct an array of Product objects as defined in the json
          */
-        $this->productCatalog = json_decode(file_get_contents(__DIR__ . '\ProductCatalog.json'), true);
+        $this->productCatalog = json_decode(file_get_contents(__DIR__ . '/ProductCatalog.json'), true);
         $this->products = [];
 
         foreach ($this->productCatalog as $product) {
