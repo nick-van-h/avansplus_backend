@@ -1,0 +1,78 @@
+
+
+label {
+    width: 5rem;
+    display: inline-block;
+    vertical-align: top;
+}
+.form-submit-result {
+    height: 5rem;
+    margin-top: 1rem;
+    
+    animation: fadeInAnimation ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+     }
+}
+
+form div {
+    margin: 10px;
+}
+
+textarea {
+    width: 330px;
+}
+
+menu {
+    background-color: lightblue;
+    margin: 0;
+    padding: 0.5rem 0;
+}
+
+menu ul li {
+    display: inline-block;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+li.float-right {
+    float: right;
+}
+
+table {
+    border-collapse: collapse;
+  }
+
+table, th, td {
+    border: 1px solid grey;
+    margin: 0px;
+    padding: 5px;
+}
+
+table th:first-child {
+    padding-right: 30px;
+}
+
+.message {
+    padding: 10px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid grey;
+    width: 50%;
+    min-width: 500px;
+}
+.message h3 {
+    margin-bottom: 5px;
+}
+
+.annotation {
+    font-size: small;
+    font-style: italic;
+}
