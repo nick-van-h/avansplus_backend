@@ -12,6 +12,7 @@
 </form>
 <div class="form-submit-result">
     <?php
+    //Display the message if there is any and reset the message so that it disappears on reaload and/or can be used for next action
     if (!empty($_SESSION['message'])) {
         echo ($_SESSION['message']);
         $_SESSION['message'] = '';
@@ -25,7 +26,8 @@
         <th>Role</th>
     </tr>
     <?php
+    //Display a list of all users in the database
     $ctrl = new Controller;
-    $ctrl->Db()->get_all_users();
+    echo ($ctrl->Db()->get_all_users());
     ?>
 </table>

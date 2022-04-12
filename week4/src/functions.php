@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Returns the full URL of the base path as it would be approached from the web
+ */
 function base_url()
 {
     $base = sprintf(

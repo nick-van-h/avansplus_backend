@@ -11,7 +11,9 @@ class Controller
         $this->auth = new Authenticator($this->db);
     }
 
-
+    /**
+     * Constructs a specific page
+     */
     function view($page, $title)
     {
         require(BASE_PATH . '/views/template/head-start.php');
@@ -23,22 +25,31 @@ class Controller
         require(BASE_PATH . '/views/template/body-end.php');
     }
 
+    /**
+     * Access to the Authenticator class
+     */
     function Auth()
     {
         return $this->auth;
     }
 
+    /**
+     * Access to the Database class
+     */
     function Db()
     {
         return $this->db;
     }
 
+    /**
+     * Load the complete message board, based on the user role
+     */
     function get_message_board()
     {
         if ($this->auth->user_is_guest()) {
             $this->db->get_messages(1);
         } else {
-            $this->db->get_messages();
+            $this->db->get_messages(0, true);
         }
     }
 }

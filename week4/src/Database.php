@@ -55,18 +55,15 @@ class Database extends DatabaseAbstract
             $query = "SELECT COUNT(*) FROM users WHERE username = ?";
             $stmt = $this->db->prepare($query);
             $stmt->bind_param('s', $username);
-            if ($stmt->execute()) {
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                return ($result > 0);
-            } else {
-                $_SESSION['error'] = 'Unable to execute query: ' . $e->getMessage();
-                return false;
-            }
+            $stmt->execute();
+            $stmt->bind_result($result);
+            $stmt->fetch();
+            return ($result > 0);
         } catch (Exception $e) {
-            $_SESSION['error'] = $e->getMessage();
+            $_SESSION['message'] .= 'Unable to execute query: ' . $stmt->error() . " - " . $e->getMessage() . "<br>";
             return false;
         }
+        $stmt->close();
     }
 
     /**
@@ -76,16 +73,16 @@ class Database extends DatabaseAbstract
      */
     private function create_new_user($username, $password, $role)
     {
-        $pw_hash = password_hash($password, PASSWORD_DEFAULT);
-        $query = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param('sss', $username, $pw_hash, $role);
-        if ($stmt->execute()) {
-            //Insert query successfully executed
-            $_SESSION['message'] = "Successfully created new user {$username} with role {$role}";
-        } else {
+        try {
+            $pw_hash = password_hash($password, PASSWORD_DEFAULT);
+            $query = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param('sss', $username, $pw_hash, $role);
+            $stmt->execute();
+            $_SESSION['message'] .= "Successfully created new user {$username} with role {$role}<br>";
+        } catch (Exception $e) {
             //Query failed
-            $_SESSION['message'] = "Trying to create new database entry for {$username} but failed; " . $stmt->error();
+            $_SESSION['message'] .= "Trying to create new database entry for {$username} but failed; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
         }
         $stmt->close();
     }
@@ -100,16 +97,16 @@ class Database extends DatabaseAbstract
          * Update the password if not blank
          */
         if (!empty($password)) {
-            $pw_hash = password_hash($password, PASSWORD_DEFAULT);
-            $query = "UPDATE users SET password_hash = ? WHERE username = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->bind_param('ss', $pw_hash, $username);
-            if ($stmt->execute()) {
-                //Insert query successfully executed
+            try {
+                $pw_hash = password_hash($password, PASSWORD_DEFAULT);
+                $query = "UPDATE users SET password_hash = ? WHERE username = ?";
+                $stmt = $this->db->prepare($query);
+                $stmt->bind_param('ss', $pw_hash, $username);
+                $stmt->execute();
                 $_SESSION['message'] .= "Successfully updated password for {$username}<br>";
-            } else {
+            } catch (Exception $e) {
                 //Query failed
-                $_SESSION['message'] .= "Trying to update password for {$username} but failed; " . $stmt->error() . "<br>";
+                $_SESSION['message'] .= "Trying to update password for {$username} but failed; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
                 $success = false;
             }
         }
@@ -118,15 +115,15 @@ class Database extends DatabaseAbstract
          * Update the role if not blank
          */
         if (!empty($role)) {
-            $query = "UPDATE users SET role = ? WHERE username = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->bind_param('ss', $role, $username);
-            if ($stmt->execute()) {
-                //Insert query successfully executed
+            try {
+                $query = "UPDATE users SET role = ? WHERE username = ?";
+                $stmt = $this->db->prepare($query);
+                $stmt->bind_param('ss', $role, $username);
+                $stmt->execute();
                 $_SESSION['message'] .= "Successfully updated role for {$username} to {$role}<br>";
-            } else {
+            } catch (Exception $e) {
                 //Query failed
-                $_SESSION['message'] .= "Trying to update role for {$username} but failed; " . $stmt->error() . "<br>";
+                $_SESSION['message'] .= "Trying to update role for {$username} but failed; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
                 $success = false;
             }
         }
@@ -134,88 +131,141 @@ class Database extends DatabaseAbstract
         return $success;
     }
 
+    /**
+     * Returns a preformatted string of table rows containing all users and their role
+     */
     function get_all_users()
     {
-        $query = "SELECT username, role FROM users";
-        $stmt = $this->db->prepare($query);
-        if ($stmt->execute()) {
-            //Query succesful, echo results
+        try {
+            $query = "SELECT username, role FROM users";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
             $stmt->bind_result($username, $role);
+            $msg = '';
             while ($stmt->fetch()) {
-                echo ("<tr><td>{$username}</td><td>{$role}</td></tr>");
+                $msg .= "<tr><td>{$username}</td><td>{$role}</td></tr>";
             }
-        } else {
+            return $msg;
+        } catch (Exception $e) {
             //Query failed
-            $_SESSION['message'] .= "Trying to fetch all users but failed; " . $stmt->error() . "<br>";
-            $success = false;
+            $_SESSION['message'] .= "Trying to fetch all users but failed; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
+            return false;
         }
     }
 
+    /**
+     * Retrieves the password hash from the database for the given user
+     * Then verifies if the password and the hash match
+     */
     function verify_credentials($username, $password)
     {
-        $query = "SELECT password_hash FROM users WHERE username = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param('s', $username);
-        if ($stmt->execute()) {
-            //Query succesful, get hash
+        try {
+            $query = "SELECT password_hash FROM users WHERE username = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param('s', $username);
+            $stmt->execute();
             $stmt->bind_result($hash);
             $stmt->fetch();
             return password_verify($password, $hash);
-        } else {
+        } catch (Exception $e) {
             //Query failed
-            $_SESSION['message'] .= "Unable to fetch password for {$username}; " . $stmt->error() . "<br>";
+            $_SESSION['message'] .= "Unable to fetch password for {$username}; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
             return false;
         }
     }
 
+    /**
+     * Gets the role from the database for the given user
+     */
     function get_user_role($username)
     {
-        $query = "SELECT role FROM users WHERE username = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param('s', $username);
-        if ($stmt->execute()) {
-            //Query succesful, get hash
+        try {
+            $query = "SELECT role FROM users WHERE username = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param('s', $username);
+            $stmt->execute();
             $stmt->bind_result($role);
             $stmt->fetch();
             return $role;
-        } else {
+        } catch (Exception $e) {
             //Query failed
-            $_SESSION['message'] .= "Unable to fetch role for {$username}; " . $stmt->error() . "<br>";
+            $_SESSION['message'] .= "Unable to fetch role for {$username}; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
             return false;
         }
     }
 
+    /**
+     * Creates a new message entry
+     */
     function create_new_message($username, $title, $message)
     {
-        $query = "INSERT INTO messages (username, title, message) VALUES (?, ?, ?)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param('sss', $username, $title, $message);
-        if ($stmt->execute()) {
-            //Insert query successfully executed
+        try {
+            $query = "INSERT INTO messages (username, title, message) VALUES (?, ?, ?)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param('sss', $username, $title, $message);
+            $stmt->execute();
             $_SESSION['message'] = "Successfully posted message {$title}";
-        } else {
+        } catch (Exception $e) {
             //Query failed
-            $_SESSION['message'] = "Failed to post message {$title}; " . $stmt->error();
+            $_SESSION['message'] = "Failed to post message {$title}; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
         }
         $stmt->close();
     }
 
-    function get_messages($limit = 0)
+    /**
+     * Updates an existing message based on the message ID
+     */
+    function update_message($username, $id, $title, $message)
     {
-        $query = "SELECT username, created, title, message FROM messages ORDER BY created DESC";
-        $stmt = $this->db->prepare($query);
-        if ($stmt->execute()) {
-            //Query succesful, echo results
-            $stmt->bind_result($username, $created, $title, $message);
+        try {
+            $query = "UPDATE messages SET title = ?, message = ?, lastupdate = Now(), updateby = ? WHERE id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param('sssi', $title, $message, $username, $id);
+            $stmt->execute();
+            $_SESSION['message'] = "Successfully updated message {$title}";
+        } catch (Exception $e) {
+            //Query failed
+            $_SESSION['message'] = "Failed to post message {$title}; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
+        }
+        $stmt->close();
+    }
+
+    /**
+     * Creates a preformatted string containing all messages
+     * Retrieve all messages from the database, order descending by creation date (newest first)
+     * Optionally limit the number of messages to be displayed, if limit is 0 there is no limit
+     * Optionally display an edit button for the admin
+     */
+    function get_messages($limit = 0, $admin = false)
+    {
+        try {
+            //Prepare and execute the query
+            $query = "SELECT id, username, created, title, message, updateby, lastupdate FROM messages ORDER BY created DESC";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            $stmt->bind_result($id, $username, $created, $title, $message, $updateBy, $lastUpdate);
+
+            //Fetch resulting rows and create message
             $cnt = 0;
+            $msg = '';
             while ($stmt->fetch() && ($limit == 0 || $cnt < $limit)) {
-                echo ("<div class=\"message\"><h3>{$title}</h3><div class=\"annotation\">Posted by {$username} on {$created}</div><p>{$message}</p></div>");
+                $msg .= "<div class=\"message\" id=\"message-{$id}\"><h3>{$title}</h3><div class=\"annotation\">Posted by {$username} on {$created}</div>";
+                if ($updateBy) {
+                    $msg .= "<div class=\"annotation\">Last updated by {$updateBy} on {$lastUpdate}</div>";
+                }
+                $msg .= "<p>{$message}</p>";
+                if ($admin) {
+                    $msg .= "<button onclick=\"updateMessage({$id})\">Edit</button>";
+                }
+                $msg .= "</div>";
                 $cnt++;
             }
-        } else {
+
+            return $msg;
+        } catch (Exception $e) {
             //Query failed
-            $_SESSION['message'] .= "Trying to fetch all users but failed; " . $stmt->error() . "<br>";
-            $success = false;
+            $_SESSION['message'] .= "Trying to fetch all users but failed; " . $stmt->error() . " - " . $e->getMessage() . "<br>";
+            return false;
         }
     }
 }

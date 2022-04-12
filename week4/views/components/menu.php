@@ -10,6 +10,7 @@ $ctrl = new Controller();
             <a href="index.php">Home</a>
         </li>
         <?php
+        //New message and manage user buttons if the user is an admin
         if ($ctrl->Auth()->user_is_admin()) {
         ?>
             <li>
@@ -22,6 +23,7 @@ $ctrl = new Controller();
         }
         ?>
         <?php
+        //Logout button if the user is logged in
         if ($ctrl->Auth()->user_is_logged_in()) {
         ?>
             <li>

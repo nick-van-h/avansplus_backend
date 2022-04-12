@@ -16,6 +16,9 @@ class Authenticator
         $this->db = $db;
     }
 
+    /**
+     * Functions to check if the user is logged in and to check for a specific role
+     */
     function user_is_logged_in()
     {
         return $_SESSION['loginstatus'] == self::STATUS_LOGGEDIN;
@@ -36,6 +39,9 @@ class Authenticator
         return $this->user_is_logged_in() && $_SESSION['userrole'] == self::ROLE_GUEST;
     }
 
+    /**
+     * Try to login the user with the given username and password
+     */
     function login_user($username, $password)
     {
         if ($this->db->verify_credentials($username, $password)) {
@@ -46,11 +52,17 @@ class Authenticator
         }
     }
 
+    /**
+     * Gets the username of the logged in user
+     */
     function get_username()
     {
         return $_SESSION['user'];
     }
 
+    /**
+     * Logs out the user and destroys the session
+     */
     function logout()
     {
         $_SESSION['loginstatus'] = self::STATUS_NOTLOGGEDIN;
@@ -58,6 +70,9 @@ class Authenticator
         session_destroy();
     }
 
+    /**
+     * Set the login status and set the related user role
+     */
     private function set_login_status($role)
     {
         $_SESSION['loginstatus'] = self::STATUS_LOGGEDIN;
