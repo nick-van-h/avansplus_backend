@@ -47,9 +47,9 @@ class Controller
     function get_message_board()
     {
         if ($this->auth->user_is_guest()) {
-            $this->db->get_messages(1);
+            return $this->db->get_messages(1);
         } else {
-            $this->db->get_messages(0, true);
+            return $this->db->get_messages(0, true);
         }
     }
 }
